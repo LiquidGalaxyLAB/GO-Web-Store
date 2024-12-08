@@ -5,6 +5,7 @@ export class Searchbar extends HTMLElement {
     this.value = "";
     this.timer = null;
     this.speechRecognitionExists = true;
+    this.isListening = false;
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.debounce = this.debounce.bind(this);
@@ -16,7 +17,7 @@ export class Searchbar extends HTMLElement {
         window.webkitSpeechRecognition)();
       this.speechRecognition.continuous = false;
       this.speechRecognition.lang = "en-US";
-      this.speechRecognition.interimResults = false;
+      this.speechRecognition.interimResults = true; // Enable partial results
     } else {
       this.speechRecognitionExists = false;
     }
@@ -41,13 +42,45 @@ export class Searchbar extends HTMLElement {
 
   handleMicClick() {
     if (this.speechRecognition) {
+      if (this.isListening) {
+        this.speechRecognition.stop(); // Stop if already listening
+        return;
+      }
+
+      this.isListening = true;
+      this.shadowRoot.querySelector(".listening-overlay").style.display =
+        "flex";
+      this.shadowRoot.querySelector(".mic").classList.add("listening");
+
       this.speechRecognition.start();
-      setTimeout(() => {
-        this.speechRecognition.stop();
-      }, 5000);
+
+      this.speechRecognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        this.stopListening();
+        alert("Error during voice recognition. Please try again.");
+      };
+
+      this.speechRecognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join("");
+        this.value = transcript;
+        this.shadowRoot.querySelector("input").value = transcript;
+        this.debouncedSearch(transcript);
+      };
+
+      this.speechRecognition.onend = () => {
+        this.stopListening();
+      };
     } else {
-      console.error("Speech recognition is not supported in this browser.");
+      alert("Speech recognition is not supported in your browser.");
     }
+  }
+
+  stopListening() {
+    this.isListening = false;
+    this.shadowRoot.querySelector(".listening-overlay").style.display = "none";
+    this.shadowRoot.querySelector(".mic").classList.remove("listening");
   }
 
   static get observedAttributes() {
@@ -87,14 +120,16 @@ export class Searchbar extends HTMLElement {
           border-radius: 40px;
           border: none;
           background-color: var(--md-sys-color-surface-container-low);
-          color: var(--md-sys-color-on-background)
+          color: var(--md-sys-color-on-background);
+          transition: color 0.3s ease;
         }
 
         input[type="search"]::placeholder {
           font-size: 1.25rem;
           font-weight: 400;
           color: var(--md-sys-color-outline)
-        }
+        
+          }
 
         input[type="search"]::-webkit-search-decoration,
         input[type="search"]::-webkit-search-cancel-button,
@@ -115,7 +150,7 @@ export class Searchbar extends HTMLElement {
           background-repeat: no-repeat;
           background-position: center;
           background-image: url('./assets/Cancel.svg');
-        }
+  }
 
         input[type="search"]:focus {
           outline: 1px solid var(--md-sys-color-on-background);
@@ -129,11 +164,43 @@ export class Searchbar extends HTMLElement {
           border: none;
           padding-inline: 10px;
           cursor: pointer;
+          transition: transform 0.3s ease;
         }
 
         button img {
           width: 24px;
           height: 24px;
+        }
+
+        button.listening {
+          animation: pulse 1.5s infinite;
+        }
+
+        .listening-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          color: white;
+          display: none;
+          justify-content: center;
+          align-items: center;
+          font-size: 1rem;
+          border-radius: 40px;
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.2);
+          }
+          100% {
+            transform: scale(1);
+          }
         }
       </style>
 
@@ -151,7 +218,10 @@ export class Searchbar extends HTMLElement {
           }"
           aria-label="Search the web store"
         />
-        <button class="mic"><img src="./assets/Microphone.svg" alt="voice search"></button>
+        <div class="listening-overlay">Listening...</div>
+        <button class="mic">
+          <img src="./assets/Microphone.svg" alt="Voice search" />
+        </button>
       </div>
     `;
 
@@ -161,27 +231,29 @@ export class Searchbar extends HTMLElement {
     this.shadowRoot
       .querySelector(".mic")
       .addEventListener("click", this.handleMicClick);
-    if (!this.speechRecognitionExists)
+
+    if (!this.speechRecognitionExists) {
       this.shadowRoot.querySelector(".mic").style.display = "none";
-    if (this.speechRecognition) {
-      this.speechRecognition.onstart = () => {
-        console.log("Speech recognition started.");
-      };
+      if (this.speechRecognition) {
+        this.speechRecognition.onstart = () => {
+          console.log("Speech recognition started.");
+        };
 
-      this.speechRecognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        this.value = transcript;
-        this.shadowRoot.querySelector("input").value = transcript;
-        this.debouncedSearch(transcript);
-      };
+        this.speechRecognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          this.value = transcript;
+          this.shadowRoot.querySelector("input").value = transcript;
+          this.debouncedSearch(transcript);
+        };
 
-      this.speechRecognition.onerror = (event) => {
-        console.error("Speech recognition error", event.error);
-      };
+        this.speechRecognition.onerror = (event) => {
+          console.error("Speech recognition error", event.error);
+        };
 
-      this.speechRecognition.onend = () => {
-        console.log("Speech recognition ended.");
-      };
+        this.speechRecognition.onend = () => {
+          console.log("Speech recognition ended.");
+        };
+      }
     }
   }
 }
