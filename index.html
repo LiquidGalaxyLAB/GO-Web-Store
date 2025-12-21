@@ -33,6 +33,8 @@
     </script>
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/vt-index.css">
+    <script type="module" src="./js/animated-logo.mjs"></script>
+    <script type="module" src="./js/splash-screen.mjs"></script>
     <script type="module" src="./js/script.js" defer></script>
     <script>
         if ("serviceWorker" in navigator) {
@@ -51,7 +53,8 @@
 </head>
 
 <body>
-    <main>
+    <splash-screen id="splash-screen"></splash-screen>
+    <main id="main-content" style="display: none;">
         <h1 class="hero" aria-label="Google Earth Web Store"><animated-logo></animated-logo></h1>
         <search>
             <search-bar></search-bar>
@@ -64,7 +67,22 @@
             window.parent.postMessage(document.body.scrollHeight, '*');
         }
 
-        window.onload = sendHeight;
+        // Global function for splash screen to call
+        window.showMainContent = function() {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.style.display = 'block';
+                // Add a small delay to ensure smooth transition
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                }, 50);
+            }
+            sendHeight();
+        };
+
+        window.onload = () => {
+            sendHeight();
+        };
         window.onresize = sendHeight;
     </script>
 </body>

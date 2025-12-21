@@ -8,7 +8,7 @@ customElements.define("search-bar", Searchbar);
 customElements.define("app-card", AppCard);
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelector("animated-logo").setAttribute("animate", "true");
+  // Don't automatically animate the main page logo - only splash screen animates
   getApps();
 });
 
