@@ -1,4 +1,6 @@
-const CACHE_NAME = "pwa-cache-v1";
+// UPDATED: Changed version from v1 to v2 to force file refresh
+const CACHE_NAME = "pwa-cache-v2";
+
 const CACHE_ASSETS = [
   "./",
   "./index.html",
@@ -24,9 +26,13 @@ const CACHE_ASSETS = [
   "./fonts/Lato-Bold.ttf",
   "./fonts/Lato-Regular.ttf",
   "./fonts/Material Symbols.woff",
+  // Ensure this file is re-cached
+  "./js/splash-screen.mjs" 
 ];
 
 self.addEventListener("install", (event) => {
+  // Skip waiting forces the new service worker to become active immediately
+  self.skipWaiting(); 
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(CACHE_ASSETS);
@@ -45,7 +51,7 @@ self.addEventListener("activate", (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim()) // Become available to all pages immediately
   );
 });
 

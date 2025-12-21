@@ -52,11 +52,20 @@ export class SplashScreen extends HTMLElement {
 
         <div class="splash-content">
           <div class="logo-container" id="logo-container">
-            <!-- Animated logo will be inserted here -->
-          </div>
+            </div>
         </div>
       `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    // FIX: Use localStorage instead of sessionStorage.
+    // localStorage survives hard reloads and browser restarts.
+    if (localStorage.getItem('splashShown') === 'true') {
+      this.hide(true); // Hide immediately
+      return;
+    }
+
+    // Mark as shown permanently
+    localStorage.setItem('splashShown', 'true');
 
     // Create and insert animated logo
     this.initializeLogo();
@@ -83,7 +92,24 @@ export class SplashScreen extends HTMLElement {
     checkLogoDefined();
   }
 
-  hide() {
+  hide(immediate = false) {
+    if (immediate) {
+      // Set display none immediately to prevent flash
+      this.style.display = 'none';
+      
+      // Use setTimeout to allow the main thread to unblock
+      setTimeout(() => {
+        if (this.parentNode) {
+          this.parentNode.removeChild(this);
+        }
+        // Ensure main content is shown
+        if (window.showMainContent) {
+          window.showMainContent();
+        }
+      }, 0);
+      return;
+    }
+
     this.classList.add('hidden');
     // Remove from DOM after transition
     setTimeout(() => {
