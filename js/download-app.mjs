@@ -107,26 +107,36 @@ export class DownloadApp extends HTMLElement {
             padding: 20px;
             margin-block-start: 70px;
             display: flex;
-            justify-content: space-around;
-            align-items: center;
-            gap: 25px;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
             max-inline-size: 600px;
             margin-inline: auto;
+        }
+
+        .main > div:nth-child(2) {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
   
         .main h1 {
             color: var(--md-sys-color-primary);
             word-break: break-word;
+            margin: 0;
         }
   
         .main img {
             background-color: var(--md-sys-color-on-tertiary-container);
             padding: 10px;
             border-radius: 20px;
+            flex-shrink: 0;
         }
   
         md-filled-tonal-icon-button {
             aspect-ratio: 1/1;
+            align-self: flex-start;
         }
   
         md-filled-button {
