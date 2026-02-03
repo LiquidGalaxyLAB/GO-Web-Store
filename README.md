@@ -31,19 +31,13 @@
 
 > [!NOTE]
 > **Why "GO"?**: The name "GO" reflects our focus on Google Earth as a foundational aspect of our work, emphasizing the Google Open Source community and its contributions. The liquid galaxy is a cluster panoramic visualization of the Google Earth.
-
 ---
-
 ## Features  
 
 ### 🌍 A Platform for Liquid Galaxy Applications
 
 - A collection of apps and PWAs built by the Liquid Galaxy community.  
-- Showcases data visualization projects for Google Earth, Maps, and Street View.  
-
-### 🔗 Data Repository
-
-All app metadata and assets are sourced from our dedicated [Data Repository](https://github.com/LiquidGalaxyLAB/Data).  
+- Showcases data visualization projects for Google Earth, Maps, and Street View. 
 
 ### 🌐 Deployment
 
@@ -51,14 +45,12 @@ The web store is deployed at: [store.liquidgalaxy.eu](https://store.liquidgalaxy
 It supports use as a Progressive Web App (PWA), progressively enhanced with modern web APIs.  
 
 ---
-
 ## USE CASES
 
 ### 🏷️ Use Case of the Badging API
 
 GO Web Store leverages the **Badging API** to provide a more native app experience, inspired by **Project Fugu**.  
 The Badging API enables dynamic badge updates directly within the PWA, enhancing user interaction during file downloads.  
-
 #### Why the Badging API?
 
 Traditional download experiences rely on OS-level download bars or browser-specific badges (as shown below):  
@@ -70,7 +62,6 @@ Traditional download experiences rely on OS-level download bars or browser-speci
 2. **What You Don’t Get with OS level Percentages**  
    ![What You Don’t Get](https://github.com/user-attachments/assets/f41f93f6-382f-4ed6-9fa4-9bc3d13aedfd)  
    **Description:** The default system download bar is displayed but lacks in-app progress details.  
-
 #### Enhanced Experience with GO Web Store
 
 By integrating the **Fetch API**, GO Web Store transforms the download experience:  
@@ -131,18 +122,111 @@ The **Badging API** allows web applications to display small status indicators (
 - **To-Do List Apps:** Notify users of due or overdue tasks.
 - **Calendar Apps:** Highlight upcoming events or meetings.
 - **Fitness Apps:** Remind users of pending goals (e.g., "Steps left: 500").
+---
+
+## Local Development Setup
+The GO Web Store is built using standard web technologies and runs entirely in the browser.
+No backend services or build tools are required to run the project locally.
 
 
-## Contributing  
+### Prerequisites
 
-Contributions to the GO Web Store and its underlying technology are welcome! To contribute:
+- A modern web browser
+- Git
 
-1. Clone the repository.  
-2. Follow the [Data Repository](https://github.com/LiquidGalaxyLAB/Data) guidelines for app submissions.  
-3. Open a pull request with your changes.  
+> A local web server is required to properly test PWA and Service Worker features.
+
+Once the prerequisites are in place, follow the steps below to set up the project locally.
+
+
+
+### 1. Clone the Repository
+
+Open a terminal in the directory where you want to store the project, then run:
+
+
+```bash
+git clone https://github.com/LiquidGalaxyLAB/GO-Web-Store.git
+cd GO-Web-Store
+```
+### 2.Run the Project Locally
+
+Run the GO Web Store locally using a simple web server.
+
+#### Using `npx` (Recommended)
+
+This option requires Node.js to be installed.
+
+```bash
+npx http-server
+```
+The application will be available at the local address shown in the terminal.
 
 ---
 
-## Acknowledgments  
+## Project Structure
 
-Special thanks to the Liquid Galaxy community, Google Summer of Code contributors, and the Chrome team for their innovations and support.  
+The GO Web Store repository is organized in a simple and flat structure, making it easy to explore and modify.
+
+### Key Folders
+- **assets/** – Contains images and other static resources used by the application.
+- **fonts/** – Stores custom font files.
+- **js/** – Holds all client-side JavaScript logic.
+- **styles/** – Contains CSS files for styling and layout.
+
+### Core Files
+- **index.html** – Main entry point of the GO Web Store.
+- **app.html** – Secondary application view used internally.
+- **manifest.json** – Defines Progressive Web App (PWA) metadata and install behavior.
+- **service-worker.js** – Handles caching and offline functionality for the PWA.
+
+### Other Files
+- **CNAME** – Used for custom domain configuration.
+- **LICENSE** – Project license information.
+- **README.md** – Project documentation.
+
+---
+## Contributing
+
+Contributions to the GO Web Store are welcome. The steps below outline a simple workflow for new contributors.
+
+### 1. Fork the Repository
+Create a fork of the repository to your own GitHub account.
+
+### 2. Clone Your Fork
+Clone the forked repository to your local machine and navigate into the project directory.
+
+```bash
+git clone https://github.com/<your-username>/GO-Web-Store.git
+cd GO-Web-Store
+```
+### 3. Create a New Branch
+
+Create a new branch for your changes to keep work isolated and organized.
+```bash
+git checkout -b feature/your-change-name
+```
+### 4. Make Your Changes
+Update the code or documentation as needed.
+Ensure your changes follow the existing project structure and style.
+
+### 5. Commit and Push
+
+Commit your changes with a clear and descriptive message, then push the branch to your fork.
+```bash
+git commit -m "Update documentation"
+git push origin feature/your-change-name
+```
+### 6. Open a Pull Request
+
+Open a pull request from your branch to the main repository.
+Briefly describe the changes you made.
+
+---
+## Acknowledgments
+
+Special thanks to the Liquid Galaxy community, Google Summer of Code contributors, and the Chrome team for their innovations and support.
+
+
+
+
